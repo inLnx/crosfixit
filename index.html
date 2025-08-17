@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromebook AI Troubleshooter</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input[type="radio"],
+        .form-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+            font-size: 1rem;
+        }
+        .submit-button {
+            background: linear-gradient(to right, #6366f1, #8b5cf6);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            opacity: 0.9;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .ai-response {
+            background-color: #ecfdf5;
+            border-left: 5px solid #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            color: #065f46;
+            line-height: 1.6;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Chromebook AI Troubleshooter</h1>
+
+        <form id="troubleshootForm" class="space-y-6">
+            <!-- Question 1: Type of Issue -->
+            <div class="form-group">
+                <label>1. What type of issue are you experiencing?</label>
+                <div class="mt-2 space-y-2">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Performance (Slow, freezing)" class="form-radio text-indigo-600">
+                        <span class="ml-2">Performance (Slow, freezing)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Connectivity (Wi-Fi, Bluetooth)" class="form-radio text-indigo-600">
+                        <span class="ml-2">Connectivity (Wi-Fi, Bluetooth)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Display/Graphics (Screen flickering, no display)" class="form-radio text-indigo-600">
+                        <span class="ml-2">Display/Graphics (Screen flickering, no display)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Audio/Sound (No sound, distorted audio)" class="form-radio text-indigo-600">
+                        <span class="ml-2">Audio/Sound (No sound, distorted audio)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Battery/Power (Not charging, draining fast)" class="form-radio text-indigo-600">
+                        <span class="ml-2">Battery/Power (Not charging, draining fast)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Software/Apps (Crashes, won't open)" class="form-radio text-indigo-600">
+                        <span class="ml-2">Software/Apps (Crashes, won't open)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Hardware (Keyboard, touchpad, camera)" class="form-radio text-indigo-600">
+                        <span class="ml-2">Hardware (Keyboard, touchpad, camera)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueType" value="Other" class="form-radio text-indigo-600">
+                        <span class="ml-2">Other</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 2: When did the issue start? -->
+            <div class="form-group">
+                <label>2. When did the issue start?</label>
+                <div class="mt-2 space-y-2">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueStart" value="Suddenly" class="form-radio text-indigo-600">
+                        <span class="ml-2">Suddenly</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueStart" value="After an update" class="form-radio text-indigo-600">
+                        <span class="ml-2">After an update</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueStart" value="After installing an app" class="form-radio text-indigo-600">
+                        <span class="ml-2">After installing an app</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueStart" value="Gradually over time" class="form-radio text-indigo-600">
+                        <span class="ml-2">Gradually over time</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueStart" value="Unsure" class="form-radio text-indigo-600">
+                        <span class="ml-2">Unsure</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 3: Troubleshooting steps tried -->
+            <div class="form-group">
+                <label>3. What troubleshooting steps have you already tried? (Select all that apply)</label>
+                <div class="mt-2 space-y-2">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="troubleshootingSteps" value="Restarting the Chromebook" class="form-checkbox text-indigo-600 rounded">
+                        <span class="ml-2">Restarting the Chromebook</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="troubleshootingSteps" value="Checking for updates" class="form-checkbox text-indigo-600 rounded">
+                        <span class="ml-2">Checking for updates</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="troubleshootingSteps" value="Hard reset" class="form-checkbox text-indigo-600 rounded">
+                        <span class="ml-2">Hard reset</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="troubleshootingSteps" value="Powerwashing/Factory reset" class="form-checkbox text-indigo-600 rounded">
+                        <span class="ml-2">Powerwashing/Factory reset</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="troubleshootingSteps" value="Checking connections/cables" class="form-checkbox text-indigo-600 rounded">
+                        <span class="ml-2">Checking connections/cables</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="troubleshootingSteps" value="None" class="form-checkbox text-indigo-600 rounded">
+                        <span class="ml-2">None</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 4: Issue consistency -->
+            <div class="form-group">
+                <label>4. Does the issue occur consistently or occasionally?</label>
+                <div class="mt-2 space-y-2">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueConsistency" value="Consistently" class="form-radio text-indigo-600">
+                        <span class="ml-2">Consistently</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueConsistency" value="Occasionally" class="form-radio text-indigo-600">
+                        <span class="ml-2">Occasionally</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="issueConsistency" value="Only under specific circumstances" class="form-radio text-indigo-600">
+                        <span class="ml-2">Only under specific circumstances</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- More Details -->
+            <div class="form-group">
+                <label for="moreDetails">More Details:</label>
+                <textarea id="moreDetails" placeholder="Please provide any additional information that might be helpful, e.g., error messages, recent changes, specific apps causing issues, etc."></textarea>
+            </div>
+
+            <div class="flex justify-center items-center">
+                <button type="submit" class="submit-button">Get AI Solution</button>
+                <div id="loadingSpinner" class="loading-spinner ml-4"></div>
+            </div>
+        </form>
+
+        <!-- AI Response Area -->
+        <div id="aiResponse" class="ai-response">
+            <h2 class="text-xl font-semibold mb-3">AI's Suggested Solution:</h2>
+            <p id="responseText"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('troubleshootForm');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const aiResponseDiv = document.getElementById('aiResponse');
+            const responseText = document.getElementById('responseText');
+
+            // Exponential backoff parameters
+            const MAX_RETRIES = 5;
+            const INITIAL_DELAY = 1000; // 1 second
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent default form submission
+
+                // Show loading spinner and hide previous response
+                loadingSpinner.style.display = 'block';
+                aiResponseDiv.style.display = 'none';
+                responseText.textContent = '';
+
+                // Collect form data
+                const issueType = document.querySelector('input[name="issueType"]:checked')?.value || 'Not specified';
+                const issueStart = document.querySelector('input[name="issueStart"]:checked')?.value || 'Not specified';
+                const troubleshootingSteps = Array.from(document.querySelectorAll('input[name="troubleshootingSteps"]:checked'))
+                                                .map(cb => cb.value)
+                                                .join(', ') || 'None';
+                const issueConsistency = document.querySelector('input[name="issueConsistency"]:checked')?.value || 'Not specified';
+                const moreDetails = document.getElementById('moreDetails').value.trim();
+
+                // Construct the prompt for Gemini
+                const prompt = `I am experiencing an issue with my Chromebook. Here are the details:
+                1. Type of issue: ${issueType}
+                2. When did the issue start: ${issueStart}
+                3. Troubleshooting steps already tried: ${troubleshootingSteps}
+                4. Does the issue occur: ${issueConsistency}
+                5. More details: ${moreDetails || 'No additional details provided.'}
+
+                Please provide a concise and helpful solution or next steps to troubleshoot this Chromebook issue. Focus on practical advice.`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "AIzaSyAAh8fFFYzo9lGu_S1WteWQEKm_cBtlTJY"; // Canvas will automatically provide this at runtime
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                let retryCount = 0;
+                let delay = INITIAL_DELAY;
+
+                while (retryCount < MAX_RETRIES) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.status === 429) { // Too Many Requests
+                            retryCount++;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            delay *= 2; // Exponential increase
+                            continue; // Try again
+                        }
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+                        }
+
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            responseText.textContent = text;
+                            aiResponseDiv.style.display = 'block';
+                        } else {
+                            responseText.textContent = 'Sorry, I could not generate a solution. Please try again or provide more details.';
+                            aiResponseDiv.style.display = 'block';
+                        }
+                        break; // Exit loop on success
+                    } catch (error) {
+                        console.error('Error fetching from Gemini API:', error);
+                        if (retryCount < MAX_RETRIES - 1) {
+                            retryCount++;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            delay *= 2;
+                        } else {
+                            responseText.textContent = `An error occurred: ${error.message}. Please check your internet connection and try again.`;
+                            aiResponseDiv.style.display = 'block';
+                        }
+                    }
+                }
+                loadingSpinner.style.display = 'none'; // Hide spinner regardless of success or failure
+            });
+        });
+    </script>
+</body>
+  </html>
+  
